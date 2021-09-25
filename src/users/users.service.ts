@@ -27,7 +27,7 @@ export class UsersService {
       });
   }
 
-  async findOne(id: string) {
+  async findOne(id: string): Promise<any> {
     return await this.UserModel.findById(id)
       .exec()
       .then((doc) => {
