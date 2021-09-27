@@ -1,31 +1,42 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { UsersService } from '../users/users.service';
-import { JwtService } from '@nestjs/jwt';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { User, UserDocument } from '../users/schemas/user.schema';
+import { JwtService } from '@nestjs/jwt';
 
 @Injectable()
 export class AuthService {
   constructor(
     private usersService: UsersService,
-    private jwtService: JwtService,
-    @InjectModel(User.name) private UserModel: Model<UserDocument>
+    @InjectModel(User.name) private UserModel: Model<UserDocument>,
+    private readonly jwtService: JwtService,
   ) {}
 
-    async validateUser(username: string, pass: string): Promise<any> {
-    const user = await this.usersService.findOne(username);
-    if (user && user.password === pass) {
+  async validateUser(payload: any): Promise<any> {
+    const { email, password } = payload;
+    /*    const user = await this.usersService.findByEmail(email);
+    if (user && user.password === password) {
       const { password, ...result } = user;
       return result;
     }
+
+    */
     return null;
   }
 
-  async login(user: any) {
-    const payload = { username: user.username, sub: user.userId };
-    return {
-      //access_token: this.jwtService.sign(payload),
-    };
+  async chechUser(req: any) {
+    try {
+      const cookie = req.cookies['access_token'];
+      const data = await this.jwtService.verifyAsync(cookie);
+
+      if (!data) {
+        throw new UnauthorizedException('token no valido');
+      }
+
+      return data;
+    } catch (e) {
+      throw new UnauthorizedException('token no valido');
+    }
   }
 }

@@ -8,10 +8,12 @@ import {
   Delete,
   UsePipes,
   ValidationPipe,
+  Res,
 } from '@nestjs/common';
 import { MesasService } from './mesas.service';
 import { MesaDto } from './dto/create-mesa.dto';
 import { UpdateMesaDto } from './dto/update-mesa.dto';
+import { Response } from 'express';
 
 @Controller('mesas')
 export class MesasController {
@@ -19,27 +21,33 @@ export class MesasController {
 
   @Post()
   @UsePipes(ValidationPipe)
-  create(@Body() createMesaDto: MesaDto) {
-    return this.mesasService.create(createMesaDto);
+  async create(@Body() createMesaDto: MesaDto): Promise<any> {
+    return await this.mesasService.create(createMesaDto);
   }
 
   @Get()
-  findAll() {
-    return this.mesasService.findAll();
+  async findAll(@Res() res: Response): Promise<any> {
+    try {
+      res.header({ access_token: 'access_token' });
+      const mesas = await this.mesasService.findAll();
+      return res.send(mesas);
+    } catch (e) {
+      return { error: 'error' };
+    }
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.mesasService.findOne(id);
+  async findOne(@Param('id') id: string): Promise<any> {
+    return await this.mesasService.findOne(id);
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateMesaDto: UpdateMesaDto) {
-    return this.mesasService.update(id, updateMesaDto);
+  async update(@Param('id') id: string, @Body() updateMesaDto: UpdateMesaDto) {
+    return await this.mesasService.update(id, updateMesaDto);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.mesasService.remove(id);
+  async remove(@Param('id') id: string) {
+    return await this.mesasService.remove(id);
   }
 }
