@@ -24,6 +24,9 @@ export class MesasService {
         } else {
           return doc;
         }
+      })
+      .catch((e) => {
+        console.log('error', e);
       });
   }
 

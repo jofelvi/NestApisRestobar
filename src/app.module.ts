@@ -7,6 +7,7 @@ import { StoresModule } from './stores/stores.module';
 import { MesasModule } from './mesas/mesas.module';
 import { AuthModule } from './auth/auth.module';
 import { AuthService } from './auth/auth.service';
+import { IngredientsModule } from './ingredients/ingredients.module';
 
 @Module({
   imports: [
@@ -17,6 +18,7 @@ import { AuthService } from './auth/auth.service';
     StoresModule,
     MesasModule,
     AuthModule,
+    IngredientsModule,
   ],
   controllers: [AppController],
   providers: [AppService],

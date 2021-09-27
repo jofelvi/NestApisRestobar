@@ -4,12 +4,19 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import { InjectModel } from '@nestjs/mongoose';
 import { User, UserDocument } from './schemas/user.schema';
 import { Model } from 'mongoose';
+import * as bcrypt from 'bcrypt';
+import { jwtConstants } from '../auth/constants/constanst';
 
 @Injectable()
 export class UsersService {
   constructor(@InjectModel(User.name) private UserModel: Model<UserDocument>) {}
 
   async create(createUserDto: UserDto) {
+    const hashedPass = await bcrypt.hash(
+      createUserDto.password,
+      jwtConstants.secret,
+    );
+    createUserDto.password = hashedPass;
     const createdUser = await new this.UserModel(createUserDto);
     return createdUser.save();
   }
@@ -29,6 +36,20 @@ export class UsersService {
 
   async findOne(id: string): Promise<any> {
     return await this.UserModel.findById(id)
+      .exec()
+      .then((doc) => {
+        if (doc === null) {
+          console.log('error', doc);
+          return { mensaje: 'No hay usuario con ese Id' };
+        } else {
+          return doc;
+        }
+      });
+  }
+
+  async findByEmail(email: string): Promise<any> {
+    const condition = { email: email };
+    return await this.UserModel.findOne(condition)
       .exec()
       .then((doc) => {
         if (doc === null) {
