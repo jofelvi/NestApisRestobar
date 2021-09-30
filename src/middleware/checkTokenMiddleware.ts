@@ -12,12 +12,16 @@ export class CheckTokenMiddleware implements NestMiddleware {
 
   async use(req: Request, res: Response, next: NextFunction) {
     try {
-      const cookie = req.cookies['access_token'];
-      //const token = req.headers['access-token'];
-      if (typeof cookie == undefined) {
+      //const cookie = req.cookies['access_token'];
+      const token = req.headers['access-token'];
+      if (typeof token == undefined) {
         throw new UnauthorizedException('token no valido');
       }
-      const data = await this.jwtService.verifyAsync(cookie);
+      let data;
+      if (typeof token === 'string') {
+        data = await this.jwtService.verifyAsync(token);
+        const demo = 1;
+      }
 
       if (data === null) {
         throw new UnauthorizedException('token no valido');
