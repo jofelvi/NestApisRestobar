@@ -4,7 +4,8 @@ import {
   Get,
   Body,
   BadRequestException,
-  Res, Req,
+  Res,
+  Req,
 } from '@nestjs/common';
 import { UsersService } from '../users/users.service';
 import { JwtService } from '@nestjs/jwt';
@@ -37,11 +38,14 @@ export class AuthController {
       throw new BadRequestException('credenciales invalidas');
     }
     //const { password, ...result } = user;
-    // bcrypt.compareSync(password === user.password)
+    //bcrypt.compareSync(password === user.password)
 
     const jwt = await this.jwtService.signAsync({
       id: user._id,
       email: user.email,
+      role: [user.role],
+      storeId: user.storeId,
+      name: user.name,
     });
     response.cookie('access_token', jwt);
     return {

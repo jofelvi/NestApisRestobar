@@ -21,7 +21,7 @@ export class User {
   password: string;
 
   @Prop()
-  role: string;
+  role: string[];
 
   @Prop()
   storeId: number;

@@ -22,9 +22,8 @@ export class UserDto {
   readonly lastName: string;
 
   @ApiProperty()
-  @IsString()
   @IsNotEmpty()
-  readonly role: string;
+  readonly role: string[];
 
   @ApiProperty()
   @IsNumber()
