@@ -14,7 +14,8 @@ export class CheckTokenMiddleware implements NestMiddleware {
     try {
       //const cookie = req.cookies['access_token'];
       const token = req.headers['access-token'];
-      if (typeof token == undefined) {
+
+      if (!token) {
         throw new UnauthorizedException('token no valido');
       }
       let data;

@@ -19,7 +19,7 @@ export class IngredientsService {
   async findAll(): Promise<any> {
     const ingredients = await this.IngredientsModel.find()
       .then((doc) => {
-        console.log(doc);
+        //console.log(doc);
         if (doc.length < 1) {
           console.log('error', doc);
           return { mensaje: 'No ingredients creados' };
